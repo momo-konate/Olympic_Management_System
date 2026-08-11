@@ -1,88 +1,83 @@
-# Olympic Management System - API REST et Web Service SOAP
-###Solution backend développée avec Spring Boot 3 permettant de gérer les événements, athlètes, disciplines, épreuves et résultats des Jeux Olympiques. Le système gère le calcul du tableau des médailles, les podiums et expose une double interface REST et SOAP.
+# Olympic Management System
 
-##Technologies utilisées
-Java 17
+Solution backend développée avec Spring Boot 3 pour la gestion globale des événements, athlètes, disciplines, épreuves et résultats des Jeux Olympiques. Le système gère le calcul du tableau des médailles, l'affichage des podiums et expose une double interface REST et SOAP.
 
-Spring Boot 3
+## Technologies utilisées
 
-Spring Data JPA / Hibernate
+- **Langage :** Java 17
+- **Framework :** Spring Boot 3
+- **Accès aux données :** Spring Data JPA / Hibernate
+- **Services Web :** Spring Web (REST) & Spring Web Services (SOAP)
+- **Base de données :** H2 Database (mode fichier persistant)
+- **Documentation & Outils :** OpenAPI / Swagger UI, Lombok, Maven, JAXB, Spring Validation
 
-Spring Web (API REST)
+## Architecture du projet
 
-Spring Web Services (Web Service SOAP)
-
-Spring Validation
-
-Base de données H2 (mode fichier persistant)
-
-OpenAPI / Swagger UI
-
-Lombok, Maven, JAXB
-
-##Architecture du projet
+```
 src/main/java/apiprojet/olympic_management_system/
 ├── Controllers/       # Contrôleurs REST
 ├── Dto/               # Records DTOs (Request / Response / Pagination)
-├── Entity/            # Entités JPA (Nation, Athlete, Discipline, Epreuve, Resultat)
-├── Exception/         # Gestion globale des erreurs (@ControllerAdvice)
-├── Mappers/           # Composants de conversion Entity / DTO
-├── Repositories/      # Interfaces Spring Data JPA
-├── Services/          # Logique métier (Calculs médailles, podiums, CRUD)
-└── Soap/              # Configuration et Endpoints SOAP
-##Lancement du projet
-Prérequis
-Java 17 ou supérieur installé
+├── Entity/             # Entités JPA (Nation, Athlete, Discipline, Epreuve, Resultat)
+├── Exception/          # Gestion globale des erreurs (@ControllerAdvice)
+├── Mappers/            # Composants de conversion Entity / DTO
+├── Repositories/        # Interfaces Spring Data JPA
+├── Services/            # Logique métier (calculs médailles, podiums, CRUD)
+└── Soap/                # Configuration et endpoints SOAP
+```
 
-Maven 3.8+
+## Lancement du projet
 
-Démarrage
+### Prérequis
+
+- Java 17 ou supérieur
+- Maven 3.8+
+
+### Démarrage
+
 À la racine du projet, exécutez :
 
-Bash
+```bash
 mvn spring-boot:run
-L'application démarre par défaut sur le port 8083.
+```
 
-Documentation et Endpoints
-Documentation REST
-Swagger UI : http://localhost:8083/swagger-ui.html
+L'application démarre par défaut sur le port `8083`.
 
-Console H2 Web : http://localhost:8083/h2-console
+## Documentation & Endpoints
 
-JDBC URL : jdbc:h2:file:./data/olympicdb
+### Console & UI REST
 
-User : sa | Password : (vide)
+- Swagger UI : `http://localhost:8083/swagger-ui.html`
+- Console H2 : `http://localhost:8083/h2-console`
+  - JDBC URL : `jdbc:h2:file:./data/olympicdb`
+  - User : `sa`
+  - Password : *(vide)*
 
-Endpoints REST principaux
-Nations : /api/v1/nations
+### Endpoints REST principaux
 
-Tableau des médailles : GET /api/v1/nations/tableau-medailles
+| Ressource | Endpoint |
+|---|---|
+| Nations | `/api/v1/nations` |
+| Tableau des médailles | `GET /api/v1/nations/tableau-medailles` |
+| Athlètes | `/api/v1/athletes` |
+| Disciplines | `/api/v1/disciplines` |
+| Épreuves | `/api/v1/epreuves` |
+| Résultats | `/api/v1/resultats` |
+| Podiums | `GET /api/v1/resultats/podium/{idEpreuve}` |
 
-Athlètes : /api/v1/athletes
+### Web Service SOAP
 
-Disciplines : /api/v1/disciplines
+Le service Web SOAP permet de consulter l'historique complet des performances d'un athlète.
 
-Épreuves : /api/v1/epreuves
+- WSDL : `http://localhost:8083/ws/resultats.wsdl`
+- Endpoint SOAP : `http://localhost:8083/ws`
 
-Résultats : /api/v1/resultats
+**Exemple de requête SOAP (Postman)**
 
-Podiums : GET /api/v1/resultats/podium/{idEpreuve}
+- Méthode HTTP : `POST`
+- Header : `Content-Type: text/xml`
+- Body (XML) :
 
-##Web Service SOAP
-Le service SOAP permet de consulter l'historique des performances d'un athlète.
-
-WSDL : http://localhost:8083/ws/resultats.wsdl
-
-Endpoint SOAP : http://localhost:8083/ws
-
-Exemple de requête SOAP (Postman)
-Méthode : POST
-
-Header : Content-Type: text/xml
-
-Body (XML) :
-
-XML
+```xml
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
                   xmlns:soap="http://apiprojet.olympic_management_system/soap">
    <soapenv:Header/>
@@ -92,3 +87,4 @@ XML
       </soap:GetHistoriqueAthleteRequest>
    </soapenv:Body>
 </soapenv:Envelope>
+```
